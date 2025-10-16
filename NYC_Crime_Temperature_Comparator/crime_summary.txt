@@ -1,0 +1,3 @@
+Crime Loader Summary
+Run Date: 2025-10-13T19:56:18.937717500
+Total Records Inserted: 6431
