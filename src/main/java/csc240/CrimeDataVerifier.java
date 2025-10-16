@@ -27,7 +27,7 @@ public class CrimeDataVerifier {
                 System.out.println("Verification failed");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Verification failed: " + e.getMessage());
         }
     }
     private static int readSummaryFile(String path) throws IOException {

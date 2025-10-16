@@ -21,11 +21,9 @@ public class TemperatureDataVerifier {
         } 
         catch (SQLException e) {
             System.out.println("Database verification failed: " + e.getMessage());
-            e.printStackTrace();
         } 
         catch (Exception e) {
-            System.out.println("Unexpected error during temperature verification: " + e.getMessage());
-            e.printStackTrace();
+            System.out.println("Database verification failed: " + e.getMessage());
         }
     }
 

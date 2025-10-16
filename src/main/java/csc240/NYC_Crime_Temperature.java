@@ -45,12 +45,8 @@ public class NYC_Crime_Temperature {
         }
         catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
-            e.printStackTrace();
-        }
-
-        
+        }       
     } 
-
 
     private static void createTable() throws SQLException {
         String sql = """
@@ -71,8 +67,7 @@ public class NYC_Crime_Temperature {
             stmt.execute();
         }
         catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("caught");
+            System.out.println("SQLException caught " + e.getMessage());
         }
     }
 
@@ -85,14 +80,11 @@ public class NYC_Crime_Temperature {
         } 
         catch (Exception e) {
             System.out.println("Failed to write summary file: " + e.getMessage());
-            e.printStackTrace();
         }
     }
 
 
     private static void storeData(List<DailyIncidentSummary> summaries, List<TemperatureMax_Date> temperatures) throws SQLException {
-        
-
         Map<String, Double> tempMap = new HashMap<>();
         for (TemperatureMax_Date t : temperatures) {
             tempMap.put(t.date, t.temperature_max);
@@ -119,27 +111,15 @@ public class NYC_Crime_Temperature {
                 ps.setString(8, String.join(",", summary.incidentKeys));
                 ps.addBatch();
             }
-            ps.executeBatch(); // Execute all insertions at once
-        }
+            
+            ps.executeBatch();
 
-        Map<String, Double> tempSummaries = TemperatureMax_Date.summarizeByDate(temperatures);
-        TemperatureDataVerifier.writeTemperatureSummaryFile(tempSummaries.size());
+            Map<String, Double> tempSummaries = TemperatureMax_Date.summarizeByDate(temperatures);
+            TemperatureDataVerifier.writeTemperatureSummaryFile(tempSummaries.size());
         
-        writeSummaryFile(summaries.size()); 
-        TemperatureDataVerifier.verify();
-        CrimeDataVerifier.verify();
-
-
-    // private static void printResults(Apod apod, String key, WikiSummary wiki) {
-    //     System.out.println("Extracted string: " + key);
-    //     if (wiki != null){
-    //         System.out.println("Wiki extract: " + wiki.extract);
-    //         System.out.println("Stored APOD info for: " + apod.title);
-    //     } else {
-    //         System.out.println("No Wiki summary found for key: " + key);
-    //     }
-    // }
+            writeSummaryFile(summaries.size()); 
+            TemperatureDataVerifier.verify();
+            CrimeDataVerifier.verify();
+        }
     }
-
-    
 }
