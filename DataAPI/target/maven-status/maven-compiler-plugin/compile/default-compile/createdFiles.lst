@@ -1,0 +1,7 @@
+dataapi\Config.class
+dataapi\TemperatureDataFetcher.class
+dataapi\DBHelperClass.class
+dataapi\IncidentDataVerifier.class
+dataapi\IncidentDataFetcher.class
+dataapi\DataAPIServer.class
+dataapi\TemperatureDataVerifier.class

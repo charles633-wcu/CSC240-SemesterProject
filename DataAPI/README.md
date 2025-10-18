@@ -1,0 +1,3 @@
+In Phase 1, incidents and temperatures were handled by separate classes (DailyIncidentSummary and TemperatureMax_Date). Also there were assymetrical because DailyIncidentSummary was it's own object but TemperatureMax_Date was an object with the fetch methods inside as well which worked for phase 1 but not for phase 2
+In Phase 2, since the DataAPI already merges both datasets into unified daily records, it was more efficient and  clear to represent them with a single model class.
+This reduces redundancy.

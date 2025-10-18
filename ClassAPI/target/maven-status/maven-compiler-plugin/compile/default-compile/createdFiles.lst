@@ -1,0 +1,5 @@
+classapi\ClassAPIServer.class
+classapi\DataClient.class
+classapi\models\DailySummary.class
+classapi\models\TemperatureMax.class
+classapi\models\Incident.class

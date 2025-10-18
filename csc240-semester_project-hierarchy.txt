@@ -1,0 +1,116 @@
+CSC240-Semester_Project/
+├── .vscode/
+│   ├── settings.json
+│   └── settings_backup.json
+├── ClassAPI/
+│   ├── README.md
+│   ├── pom.xml
+│   ├── src/
+│   │   └── main/
+│   │       └── java/
+│   │           └── classapi/
+│   │               ├── ClassAPIServer.java
+│   │               ├── DataClient.java
+│   │               └── models/
+│   │                   ├── DailySummary.java
+│   │                   ├── Incident.java
+│   │                   └── TemperatureMax.java
+│   └── target/
+│       ├── classes/
+│       │   └── classapi/
+│       │       ├── ClassAPIServer.class
+│       │       ├── DataClient.class
+│       │       └── models/
+│       │           ├── DailySummary.class
+│       │           ├── Incident.class
+│       │           └── TemperatureMax.class
+│       └── maven-status/
+│           └── maven-compiler-plugin/
+│               └── compile/
+│                   └── default-compile/
+│                       ├── createdFiles.lst
+│                       └── inputFiles.lst
+├── DataAPI/
+│   ├── README.md
+│   ├── CrimeTemperatureDB.db
+│   ├── compilelog.txt
+│   ├── pom.xml
+│   ├── src/
+│   │   └── main/
+│   │       └── java/
+│   │           └── dataapi/
+│   │               ├── Config.java
+│   │               ├── DataAPIServer.java
+│   │               ├── DBHelperClass.java
+│   │               ├── IncidentDataFetcher.java
+│   │               ├── IncidentDataVerifier.java
+│   │               ├── TemperatureDataFetcher.java
+│   │               └── TemperatureDataVerifier.java
+│   └── target/
+│       ├── classes/
+│       │   └── dataapi/
+│       │       ├── Config.class
+│       │       ├── DataAPIServer.class
+│       │       ├── DBHelperClass.class
+│       │       ├── IncidentDataFetcher.class
+│       │       ├── IncidentDataVerifier.class
+│       │       ├── TemperatureDataFetcher.class
+│       │       └── TemperatureDataVerifier.class
+│       └── maven-status/
+│           └── maven-compiler-plugin/
+│               └── compile/
+│                   ├── createdFiles.lst
+│                   └── inputFiles.lst
+├── NYC_Crime_Temperature_Comparator_Phase1/
+│   ├── README.md
+│   ├── pom.xml
+│   ├── crime_summary.txt
+│   ├── temperature_summary.txt
+│   ├── sql/
+│   │   ├── phase2_scheme.sql
+│   │   └── schema_crime_incidents.sql
+│   ├── src/
+│   │   ├── main/
+│   │   │   └── java/
+│   │   │       └── csc240/
+│   │   │           ├── CrimeDataVerifier.java
+│   │   │           ├── DailyIncidentSummary.java
+│   │   │           ├── Incident.java
+│   │   │           ├── NYC_Crime_Temperature.java
+│   │   │           ├── TemperatureDataVerifier.java
+│   │   │           └── TemperatureMax_Date.java
+│   │   └── test/
+│   │       └── java/
+│   │           └── csc240/
+│   │               └── AppTest.java
+│   └── target/
+│       ├── classes/
+│       │   └── csc240/
+│       │       ├── CrimeDataVerifier.class
+│       │       ├── DailyIncidentSummary.class
+│       │       ├── Incident.class
+│       │       ├── NYC_Crime_Temperature.class
+│       │       ├── TemperatureDataVerifier.class
+│       │       └── TemperatureMax_Date.class
+│       └── test-classes/
+│           └── csc240/
+│               └── AppTest.class
+├── UIApi/
+│   ├── pom.xml
+│   ├── src/
+│   │   └── main/
+│   │       └── java/
+│   │           └── uiapi/
+│   │               └── UIAPIServer.java
+│   └── target/
+│       ├── classes/
+│       │   └── uiapi/
+│       │       └── UIAPIServer.class
+│       └── maven-status/
+│           └── maven-compiler-plugin/
+│               └── compile/
+│                   ├── createdFiles.lst
+│                   └── inputFiles.lst
+├── crime_summary.txt
+├── start-all.ps1
+└── temperature_summary.txt
