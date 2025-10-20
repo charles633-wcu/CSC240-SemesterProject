@@ -1,18 +1,29 @@
 package dataapi;
 
-import dataapi.Config;
-import dataapi.DBHelperClass;
-import dataapi.IncidentDataFetcher;
-import dataapi.TemperatureDataFetcher;
-import dataapi.IncidentDataVerifier;
-import dataapi.TemperatureDataVerifier;
+// import dataapi.Config;
+// import dataapi.DBHelperClass;
+// import dataapi.IncidentDataFetcher;
+// import dataapi.TemperatureDataFetcher;
+// import dataapi.IncidentDataVerifier;
+// import dataapi.TemperatureDataVerifier;
 
-import com.sun.net.httpserver.*;
-import java.io.*;
+import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpServer;
 
 public class DataAPIServer {
 
