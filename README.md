@@ -45,6 +45,7 @@ It looks at a dataset of daily crime and weather statistics to explore  correlat
 - JDK 21 or later  
 - Apache Maven 3.9+  
 - Apache APISIX (optional for routing)
+- GitBash (to run start-all)
 
 ### Build
 

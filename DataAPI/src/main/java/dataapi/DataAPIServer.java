@@ -1,12 +1,5 @@
 package dataapi;
 
-// import dataapi.Config;
-// import dataapi.DBHelperClass;
-// import dataapi.IncidentDataFetcher;
-// import dataapi.TemperatureDataFetcher;
-// import dataapi.IncidentDataVerifier;
-// import dataapi.TemperatureDataVerifier;
-
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.sql.Connection;
