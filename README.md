@@ -1,4 +1,6 @@
-# NYC Crime and Temperature Analysis – Phase 2
+**Analyzes relationship between temperature and violent crime in New York City**
+
+**RUN WITH 'start-all.ps1' ON POWERSHELL OR 'start-all.sh' ON GITBASH**S
 
 This project is a **three-tiered data-class-ui program** that looks at relationships between daily **New York City crime incidents** and **temperature data**.  
 The system is organized into three Java-based microservices using communication through **HTTP** and data stored in **SQLite**.  
