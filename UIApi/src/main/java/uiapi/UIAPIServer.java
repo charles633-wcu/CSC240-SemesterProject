@@ -4,11 +4,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 
-import com.sun.net.httpserver.HttpServer;
-import com.sun.net.httpserver.HttpExchange;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpServer;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -50,7 +49,7 @@ public class UIAPIServer {
             }
 
             String date = query.split("=")[1];
-            String url = "http://localhost:8082/combined/" + date;
+            String url = System.getenv("ClassAPIURL") + "/combined/" + date;
 
             Request request = new Request.Builder().url(url).build();
             try (Response response = client.newCall(request).execute()) {
@@ -92,7 +91,7 @@ public class UIAPIServer {
         });
 
         server.start();
-        System.out.println("UIAPI running at http://localhost:8083/");
+        System.out.println("UIAPI running at http://localhost:8083/ or http://localhost:9080/ui/dashboard");
     }
 
     private static void sendHTML(HttpExchange exchange, String html) throws IOException {
