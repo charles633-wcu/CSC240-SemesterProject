@@ -29,7 +29,7 @@ public class UIAPIServer {
                     <head><title>NYC Incident & Temperature Viewer</title></head>
                     <body style='font-family:sans-serif'>
                         <h1>NYC Incident & Temperature Viewer</h1>
-                        <form method='get' action='/view'>
+                        <form method='get' action='/ui/view'>
                             <label>Enter date (YYYY-MM-DD): </label>
                             <input type='text' name='date' required/>
                             <input type='submit' value='Search'/>
@@ -41,7 +41,7 @@ public class UIAPIServer {
         });
 
         // /view?date=2022-07-04
-        server.createContext("/view", exchange -> {
+        server.createContext("/ui/view", exchange -> {
             String query = exchange.getRequestURI().getQuery();
             if (query == null || !query.contains("date=")) {
                 sendHTML(exchange, "<p>Missing ?date=YYYY-MM-DD</p>");
@@ -49,7 +49,8 @@ public class UIAPIServer {
             }
 
             String date = query.split("=")[1];
-            String url = System.getenv("ClassAPIURL") + "/combined/" + date;
+            String url = System.getenv("CLASS_API_URL") + "/combined/" + date;
+            System.out.println("Fetching from ClassAPI: " + url);
 
             Request request = new Request.Builder().url(url).build();
             try (Response response = client.newCall(request).execute()) {
@@ -92,6 +93,8 @@ public class UIAPIServer {
 
         server.start();
         System.out.println("UIAPI running at http://localhost:8083/ or http://localhost:9080/ui/dashboard");
+        String s = System.getenv("CLASS_API_URL");
+        System.out.println(s);
     }
 
     private static void sendHTML(HttpExchange exchange, String html) throws IOException {

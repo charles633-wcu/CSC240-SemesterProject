@@ -1,5 +1,5 @@
 #environment variable local
-$env:ClassAPIURL = "http://localhost:8082"
+$env:CLASS_API_URL = "http://localhost:8082"
 
 # start-all.ps1
 Write-Host "Starting all CSC240 project servers..." -ForegroundColor Cyan

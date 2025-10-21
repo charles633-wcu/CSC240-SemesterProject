@@ -97,7 +97,7 @@ public class DataAPIServer {
 
         server.start();
         System.out.println("DataAPI running at:");
-        System.out.println("   - http://localhost:8081/data/incidents_temp_date");
+        System.out.println("   - http://localhost:8081/data/incidents_temp_date or http://localhost:9080/data/incidents_temp_date");
         System.out.println("   - http://localhost:8081/data/incidents/{date}");
         System.out.println("   - http://localhost:8081/data/temperature/{date}");
     }
