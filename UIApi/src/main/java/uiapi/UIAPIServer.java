@@ -40,7 +40,7 @@ public class UIAPIServer {
             sendHTML(exchange, html);
         });
 
-        // /view?date=2022-07-04
+
         server.createContext("/ui/view", exchange -> {
             String query = exchange.getRequestURI().getQuery();
             if (query == null || !query.contains("date=")) {
@@ -92,7 +92,7 @@ public class UIAPIServer {
         });
 
         server.start();
-        System.out.println("UIAPI running at http://localhost:8083/ or http://localhost:9080/ui/dashboard");
+        System.out.println("UIAPI running at http://localhost:8083/ or (APISIX) http://localhost:9080/ui/dashboard");
         String s = System.getenv("CLASS_API_URL");
         System.out.println(s);
     }

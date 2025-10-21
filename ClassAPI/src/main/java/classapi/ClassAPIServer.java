@@ -1,10 +1,14 @@
 package classapi;
 
-import com.sun.net.httpserver.*;
-import java.io.*;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.InetSocketAddress;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import classapi.models.*;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpServer;
+
+import classapi.models.DailySummary;
 
 public class ClassAPIServer {
 
@@ -31,7 +35,7 @@ public class ClassAPIServer {
         });
 
         server.start();
-        System.out.println("ClassAPI running at http://localhost:8082/combined/{date}");
+        System.out.println("ClassAPI running at http://localhost:8082/combined/{date} or (APISIX) http://localhost:9080/combined/{date{}");
     }
 
     private static void sendText(HttpExchange exchange, int code, String text) throws IOException {
