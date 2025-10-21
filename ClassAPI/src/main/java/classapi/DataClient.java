@@ -1,8 +1,13 @@
 package classapi;
 
-import classapi.models.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import okhttp3.*;
+
+import classapi.models.DailySummary;
+import classapi.models.Incident;
+import classapi.models.TemperatureMax;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class DataClient {
     private static final OkHttpClient client = new OkHttpClient();
@@ -21,6 +26,8 @@ public class DataClient {
         }
     }
 
+//gets temperature by date from DataAPI
+
     public static TemperatureMax fetchTemperature(String date) throws Exception {
         String url = BASE_URL + "/temperature/" + date;
         Request request = new Request.Builder().url(url).build();
@@ -31,6 +38,7 @@ public class DataClient {
             return mapper.readValue(response.body().string(), TemperatureMax.class);
         }
     }
+// creates the merged daily summary by fetching the incident from the crime api and the temperature from the weather api
 
     public static DailySummary fetchCombined(String date) throws Exception {
         Incident i = fetchIncident(date);

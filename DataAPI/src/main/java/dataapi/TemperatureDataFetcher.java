@@ -1,11 +1,17 @@
 package dataapi;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import okhttp3.*;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class TemperatureDataFetcher {
     private static final ObjectMapper mapper = new ObjectMapper();
@@ -27,7 +33,7 @@ public class TemperatureDataFetcher {
         List<Map<String, Object>> list = new ArrayList<>();
         JsonNode root = mapper.readTree(json);
         JsonNode daily = root.get("daily");
-
+            //just in case theres a skipped day
         if (daily != null && daily.has("temperature_2m_max") && daily.has("time")) {
             JsonNode tempsMax = daily.get("temperature_2m_max");
             JsonNode dates = daily.get("time");

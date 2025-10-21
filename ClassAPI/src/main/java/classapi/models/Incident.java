@@ -2,6 +2,7 @@ package classapi.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Incident {
     public String occur_date;

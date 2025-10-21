@@ -1,12 +1,15 @@
 package dataapi;
-import dataapi.Config;
-
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Collection;
+import java.util.Map;
 
 public class DBHelperClass {
 
-    // Create the table if not exists
+    // ensures the table is created if not exist
     public static void ensureTable() {
         String sql = """
             CREATE TABLE IF NOT EXISTS DAILY_CRIME_TEMPERATURE (

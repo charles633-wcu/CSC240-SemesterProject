@@ -1,5 +1,7 @@
 package classapi.models;
 
+// merged data by date to have two classes as attributes
+
 public class DailySummary {
     public Incident incident;
     public TemperatureMax temperature;

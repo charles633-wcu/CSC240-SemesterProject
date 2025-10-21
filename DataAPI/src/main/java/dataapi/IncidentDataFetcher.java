@@ -2,18 +2,25 @@ package dataapi;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import okhttp3.*;
+import okhttp3.Credentials;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class IncidentDataFetcher {
     private static final String USERNAME = "a5jn079zj7ccuxwyo5mxfn70l";
     private static final String PASSWORD = "540ul3dt0g36ddicw4mbsv38gcyh8jxwupk9qfgemvqbqppqlq";
     private static final String CREDENTIAL = Credentials.basic(USERNAME, PASSWORD);
 
+    //creates timeout to prevent api from closing because it takes a long time for all the incidents to get fetched
     private static final OkHttpClient client = new OkHttpClient.Builder()
         .callTimeout(java.time.Duration.ofMinutes(2))
         .connectTimeout(java.time.Duration.ofSeconds(20))

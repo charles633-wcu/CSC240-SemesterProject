@@ -13,7 +13,9 @@ import classapi.models.DailySummary;
 public class ClassAPIServer {
 
     public static void main(String[] args) throws Exception {
+
         HttpServer server = HttpServer.create(new InetSocketAddress(8082), 0);
+       //jackson object mapper turns json into java objects and vice versa
         ObjectMapper mapper = new ObjectMapper();
 
         server.createContext("/combined/", exchange -> {
@@ -25,6 +27,7 @@ public class ClassAPIServer {
             String date = parts[2];
             try {
                 DailySummary summary = DataClient.fetchCombined(date);
+                //turns sdailysummary into json bytes
                 byte[] json = mapper.writeValueAsBytes(summary);
                 exchange.getResponseHeaders().set("Content-Type", "application/json");
                 exchange.sendResponseHeaders(200, json.length);
@@ -38,6 +41,7 @@ public class ClassAPIServer {
         System.out.println("ClassAPI running at http://localhost:8082/combined/{date} or (APISIX) http://localhost:9080/combined/{date{}");
     }
 
+    //method used to send text responses like error messages
     private static void sendText(HttpExchange exchange, int code, String text) throws IOException {
         exchange.sendResponseHeaders(code, text.length());
         try (OutputStream os = exchange.getResponseBody()) { os.write(text.getBytes()); }
