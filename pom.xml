@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
@@ -5,11 +6,12 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>edu.wcupa.csc240</groupId>
-  <artifactId>semester-project</artifactId>
+  <artifactId>CSC240-SemesterProject</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <modules>
+    <module>Phase1_DataLoader</module>
     <module>DataAPI</module>
     <module>ClassAPI</module>
     <module>UIAPI</module>

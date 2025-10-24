@@ -1,3 +1,0 @@
-Temperature Loader Summary
-Run Date: 2025-10-13T19:56:18.931166800
-Total Records Inserted: 7222

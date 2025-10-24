@@ -1,67 +1,92 @@
+
 package dataapi;
 
-import java.io.IOException;
-import java.time.LocalDate;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.net.httpserver.HttpExchange;
 
-import okhttp3.Credentials;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+//this creates a nested json array for the DataAPI server, 
+//which means the Person Objects is required to be constructed by ClassAPI, Person Objects allow ClassAPI to do calculations
 
 public class IncidentDataFetcher {
-    private static final String USERNAME = "a5jn079zj7ccuxwyo5mxfn70l";
-    private static final String PASSWORD = "540ul3dt0g36ddicw4mbsv38gcyh8jxwupk9qfgemvqbqppqlq";
-    private static final String CREDENTIAL = Credentials.basic(USERNAME, PASSWORD);
 
-    //creates timeout to prevent api from closing because it takes a long time for all the incidents to get fetched
-    private static final OkHttpClient client = new OkHttpClient.Builder()
-        .callTimeout(java.time.Duration.ofMinutes(2))
-        .connectTimeout(java.time.Duration.ofSeconds(20))
-        .readTimeout(java.time.Duration.ofSeconds(30))
-        .build();
-    private static final ObjectMapper mapper = new ObjectMapper();
+    public static void serveCombinedIncidents(HttpExchange exchange, ObjectMapper mapper) {
+        if (!"GET".equalsIgnoreCase(exchange.getRequestMethod())) {
+            sendText(exchange, 405, "Method Not Allowed");
+            return;
+        }
 
-    public static List<Map<String, Object>> fetchIncidents() throws IOException {
-        String url = "https://data.cityofnewyork.us/resource/833y-fsy8.json?$limit=100000";
-        Request request = new Request.Builder()
-            .url(url)
-            .header("Authorization", CREDENTIAL)
-            .build();
+        List<Map<String, Object>> incidents = new ArrayList<>();
 
-        try (Response response = client.newCall(request).execute()) {
-            if (!response.isSuccessful()) {
-                throw new IOException("Unexpected code " + response);
+        // Adjust these column names to match your actual schema
+        String sql = """
+            SELECT occur_date, boro, vic_sex, vic_age_group, perp_sex, perp_age_group
+            FROM incidents;
+        """;
+
+        try (Connection conn = DriverManager.getConnection(Config.INCIDENTS_DB_URL);
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                Map<String, Object> incident = new LinkedHashMap<>();
+                incident.put("occur_date", rs.getString("occur_date"));
+
+                // Nest borough inside location object
+                Map<String, Object> location = new LinkedHashMap<>();
+                location.put("name", rs.getString("boro"));
+                location.put("area", 0.0); // or a lookup 
+                incident.put("location", location);
+
+
+
+                Map<String, Object> victim = new LinkedHashMap<>();
+                victim.put("sex", rs.getString("vic_sex"));
+                victim.put("ageRange", rs.getString("vic_age_group"));
+                victim.put("date", rs.getString("occur_date"));
+                incident.put("victim", victim);
+
+                Map<String, Object> perpetrator = new LinkedHashMap<>();
+                perpetrator.put("sex", rs.getString("perp_sex"));
+                perpetrator.put("ageRange", rs.getString("perp_age_group"));
+                victim.put("date", rs.getString("occur_date"));
+                incident.put("perpetrator", perpetrator);
+
+                incidents.add(incident);
             }
 
-            String json = response.body().string();
-            return parseIncidents(json);
+            byte[] json = mapper.writeValueAsBytes(incidents);
+            sendJson(exchange, json);
+
+        } catch (SQLException e) {
+            System.err.println("Query failed: " + e.getMessage());
+            sendText(exchange, 500, "Database query failed: " + e.getMessage());
+        } catch (Exception e) {
+            sendText(exchange, 500, "Error: " + e.getMessage());
         }
     }
 
-    private static List<Map<String, Object>> parseIncidents(String json) throws IOException {
-        List<Map<String, Object>> incidents = new ArrayList<>();
-        JsonNode root = mapper.readTree(json);
+    private static void sendJson(HttpExchange exchange, byte[] json) throws Exception {
+        exchange.getResponseHeaders().set("Content-Type", "application/json");
+        exchange.sendResponseHeaders(200, json.length);
+        try (var os = exchange.getResponseBody()) { os.write(json); }
+    }
 
-        if (root.isArray()) {
-            for (JsonNode item : root) {
-                Map<String, Object> row = new LinkedHashMap<>();
-                row.put("vic_sex", item.path("vic_sex").asText());
-                row.put("statistical_murder_flag", item.path("statistical_murder_flag").asBoolean(false));
-                row.put("incident_key", item.path("incident_key").asText());
-                String dateStr = item.path("occur_date").asText();
-                if (dateStr != null && dateStr.length() >= 10) {
-                    row.put("occur_date", LocalDate.parse(dateStr.substring(0, 10)).toString());
-                }
-                incidents.add(row);
-            }
-        }
-        return incidents;
+    private static void sendText(HttpExchange exchange, int code, String msg) {
+        try {
+            byte[] data = msg.getBytes();
+            exchange.getResponseHeaders().set("Content-Type", "text/plain");
+            exchange.sendResponseHeaders(code, data.length);
+            try (var os = exchange.getResponseBody()) { os.write(data); }
+        } catch (Exception ignored) {}
     }
 }

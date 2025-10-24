@@ -5,11 +5,11 @@ $env:CLASS_API_URL = "http://localhost:8082"
 Write-Host "Starting all CSC240 project servers..." -ForegroundColor Cyan
 
 # Start DataAPI
-Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd DataAPI; mvn exec:java '-Dexec.mainClass=dataapi.DataAPIServer'"
+Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd DataAPI; mvn exec:java '-Dexec.mainClass=dataapi.Main'"
 
 Start-Sleep -Seconds 3  
 # Start ClassAPI
-Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd ClassAPI; mvn exec:java '-Dexec.mainClass=classapi.ClassAPIServer'"
+Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd ClassAPI; mvn exec:java '-Dexec.mainClass=classapi.Main'"
 
 Start-Sleep -Seconds 3
 

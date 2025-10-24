@@ -1,0 +1,16 @@
+#!/bin/bash
+echo "Starting all CSC240 project servers..."
+
+# Start DataAPI
+gnome-terminal -- bash -c "cd DataAPI && mvn exec:java -Dexec.mainClass=dataapi.DataAPIServer; exec bash" &
+
+sleep 3
+# Start ClassAPI
+gnome-terminal -- bash -c "cd ClassAPI && mvn exec:java -Dexec.mainClass=classapi.ClassAPIServer; exec bash" &
+
+sleep 3
+# Start UIAPI
+gnome-terminal -- bash -c "cd UIAPI && mvn exec:java -Dexec.mainClass=uiapi.UIAPIServer; exec bash" &
+
+echo "All servers launched!"
+echo "l"

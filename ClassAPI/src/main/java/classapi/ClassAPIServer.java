@@ -1,49 +1,80 @@
 package classapi;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
+import java.util.List;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.SerializableString;
+import com.fasterxml.jackson.core.io.CharacterEscapes;
+import com.fasterxml.jackson.core.io.SerializedString;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 
 import classapi.models.DailySummary;
+import classapi.models.Incident;
+import classapi.models.Temperature.TemperatureMax_Date;
 
+//our original version was just a data pipeline, after office hours, we read up on how OOP principals work on data  
+//using OOP is powerful when you want to be able to test and reuse components across projects
 public class ClassAPIServer {
 
-    public static void main(String[] args) throws Exception {
+    private static final ObjectMapper mapper = new ObjectMapper();
+    
+    static {
+        //this will get the ClassAPI to allow "<18" as an age range entry
+        mapper.getFactory().setCharacterEscapes(new CharacterEscapes() {
+            private final int[] esc = CharacterEscapes.standardAsciiEscapesForJSON();
 
-        HttpServer server = HttpServer.create(new InetSocketAddress(8082), 0);
-       //jackson object mapper turns json into java objects and vice versa
-        ObjectMapper mapper = new ObjectMapper();
-
-        server.createContext("/combined/", exchange -> {
-            String[] parts = exchange.getRequestURI().getPath().split("/");
-            if (parts.length < 3) {
-                sendText(exchange, 400, "Usage: /combined/{date}");
-                return;
+            @Override
+            public int[] getEscapeCodesForAscii() {
+                esc['<'] = CharacterEscapes.ESCAPE_NONE;
+                esc['>'] = CharacterEscapes.ESCAPE_NONE;
+                esc['&'] = CharacterEscapes.ESCAPE_NONE;
+                return esc;
             }
-            String date = parts[2];
-            try {
-                DailySummary summary = DataClient.fetchCombined(date);
-                //turns sdailysummary into json bytes
-                byte[] json = mapper.writeValueAsBytes(summary);
-                exchange.getResponseHeaders().set("Content-Type", "application/json");
-                exchange.sendResponseHeaders(200, json.length);
-                try (OutputStream os = exchange.getResponseBody()) { os.write(json); }
-            } catch (Exception e) {
-                sendText(exchange, 500, "Error combining data: " + e.getMessage());
+
+            @Override
+            public SerializableString getEscapeSequence(int ch) {
+                return new SerializedString(String.valueOf((char) ch));
             }
         });
-
-        server.start();
-        System.out.println("ClassAPI running at http://localhost:8082/combined/{date} or (APISIX) http://localhost:9080/combined/{date{}");
     }
 
-    //method used to send text responses like error messages
-    private static void sendText(HttpExchange exchange, int code, String text) throws IOException {
-        exchange.sendResponseHeaders(code, text.length());
-        try (OutputStream os = exchange.getResponseBody()) { os.write(text.getBytes()); }
+
+    public static void execute() throws Exception {
+        HttpServer server = HttpServer.create(new InetSocketAddress(8082), 0);
+
+        // only one endpoint: GET /summary/{date}
+        server.createContext("/summary/", exchange -> {
+            String[] parts = exchange.getRequestURI().getPath().split("/");
+            if (parts.length < 3) {
+                sendText(exchange, 400, "Usage: /summary/{date}");
+                return;
+            }
+
+            String date = parts[2];
+                try {
+                List<Incident> incidents = DataClient.fetchIncidents(date);
+                TemperatureMax_Date temp = DataClient.fetchTemperature(date);
+
+                DailySummary summary = new DailySummary(date, incidents, temp);
+                byte[] json = mapper.writeValueAsBytes(summary);
+                exchange.getResponseHeaders().add("Content-Type", "application/json");
+                exchange.sendResponseHeaders(200, json.length);
+                try (OutputStream os = exchange.getResponseBody()) { os.write(json); }
+
+            } catch (Exception e) {
+                sendText(exchange, 500, "Failed: " + e.getMessage());
+            }
+        });
+        System.out.println("ClassAPI running on port 8082");
+        System.out.println("   - http://localhost:8082/summary/{date}");
+        server.start();
+    }
+
+    private static void sendText(com.sun.net.httpserver.HttpExchange exchange, int status, String message) throws java.io.IOException {
+        exchange.sendResponseHeaders(status, message.length());
+        try (OutputStream os = exchange.getResponseBody()) { os.write(message.getBytes()); }
     }
 }
