@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.Map;
 
 //creates max temp database by date
-
+//ensureTable and other methods seperated into multiple classes to keep type safety and clarity
 public class DB_Creator_MaxTemp {
 
     //ensures table created if not already exist

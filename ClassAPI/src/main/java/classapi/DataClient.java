@@ -16,7 +16,8 @@ import classapi.models.Temperature.TemperatureMax_Date;
 
 public class DataClient {
 
-    private static final String DATA_API_URL = "http://localhost:8081/data";
+    private static final String DATA_API_URL = System.getenv().getOrDefault("DATA_API_URL", "http://localhost:8081/data");
+;
     private static final ObjectMapper mapper = new ObjectMapper()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
@@ -36,7 +37,7 @@ public class DataClient {
             .filter(i -> date.equals(i.getOccurDate()))   // assumes Incident.getOccurDate() returns date
             .collect(Collectors.toList());
 
-        System.out.println("→ Found " + filtered.size() + " incidents for " + date);
+        System.out.println("Found " + filtered.size() + " incidents for " + date);
         return filtered;
     }
 

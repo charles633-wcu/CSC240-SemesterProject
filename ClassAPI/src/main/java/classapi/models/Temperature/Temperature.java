@@ -2,7 +2,9 @@ package classapi.models.Temperature;
 
 public class Temperature {
 
-    private double temperature;
+    protected double temperature;
+
+    public Temperature() {}
 
     public Temperature(double temperature){
         temperature = this.temperature;

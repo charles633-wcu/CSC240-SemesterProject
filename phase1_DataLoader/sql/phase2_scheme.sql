@@ -1,8 +1,7 @@
 -- incidents table  by date
-
 CREATE TABLE IF NOT EXISTS incidents (
     id                INTEGER PRIMARY KEY AUTOINCREMENT,
-    occur_date        TEXT    NOT NULL,          -- 'YYYY-MM-DD'
+    occur_date        TEXT    NOT NULL,          -- 'YYYY-MM-DD'format
     boro              TEXT    NOT NULL,          -- Borough name
     vic_sex           TEXT,                      -- Victim sex
     vic_age_group     TEXT,                      -- Victim age range
@@ -10,7 +9,6 @@ CREATE TABLE IF NOT EXISTS incidents (
     perp_age_group    TEXT                       -- Perpetrator age range
 );
 
--- Optional index to speed up date-range queries
 CREATE INDEX IF NOT EXISTS idx_incidents_date ON incidents(occur_date);
 CREATE INDEX IF NOT EXISTS idx_incidents_boro ON incidents(boro);
 
@@ -25,7 +23,6 @@ CREATE TABLE IF NOT EXISTS temperature_raw (
 CREATE UNIQUE INDEX IF NOT EXISTS idx_temperature_date ON temperature_raw(date);
 
 
--- victims and perpetrators table by incident id
 CREATE TABLE IF NOT EXISTS victims (
     id                INTEGER PRIMARY KEY AUTOINCREMENT,
     incident_id       INTEGER,

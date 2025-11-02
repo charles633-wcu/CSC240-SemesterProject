@@ -1,0 +1,68 @@
+version: "3.9"
+
+services:
+  dataapi:
+    build:
+      context: ./DataAPI
+    working_dir: /app
+    command: mvn exec:java -Dexec.mainClass=dataapi.Main
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./DataAPI:/app
+    depends_on:
+      - apisix
+
+  classapi:
+    build:
+      context: ./ClassAPI
+    working_dir: /app
+    command: mvn exec:java -Dexec.mainClass=classapi.Main
+    ports:
+      - "8082:8082"
+    volumes:
+      - ./ClassAPI:/app
+    depends_on:
+      - dataapi
+      - apisix
+
+  # UIAPI (in progress)
+  uiapi:
+    build:
+      context: ./UIApi
+    working_dir: /app
+    command: mvn exec:java -Dexec.mainClass=uiapi.UIAPIServer
+    ports:
+      - "8083:8083"
+    volumes:
+      - ./UIApi:/app
+    depends_on:
+      - classapi
+      - apisix
+
+  apisix:
+    image: apache/apisix:latest
+    restart: always
+    ports:
+      - "9080:9080"  # Public gateway 
+      - "9180:9180"  # Admin API
+    volumes:
+      - ./conf/config.yaml:/usr/local/apisix/conf/config.yaml
+    environment:
+      - APISIX_STAND_ALONE=true
+      - APISIX_LISTEN_PORT=9080
+    depends_on:
+      - etcd
+
+  etcd:
+    image: bitnami/etcd:latest
+    restart: always
+    environment:
+      - ALLOW_NONE_AUTHENTICATION=yes
+      - ETCD_ADVERTISE_CLIENT_URLS=http://0.0.0.0:2379
+      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
+    volumes:
+      - etcd_data:/bitnami/etcd
+
+volumes:
+  etcd_data:

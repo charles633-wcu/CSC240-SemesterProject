@@ -1,7 +1,7 @@
 package classapi.models.Person_Object;
 
 //creating a class hierarchy for the project
-public class Person {
+public abstract class Person {
 
     protected String sex;
     protected String ageRange;

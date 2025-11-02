@@ -4,23 +4,24 @@ package classapi.models.Temperature;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class TemperatureMax_Date {
+public class TemperatureMax_Date extends Temperature {
 
     private String date;
-    private double temp;
 
     // required by jackson
-    public TemperatureMax_Date() {}
+    public TemperatureMax_Date() {
+        super(0.0);
+    }
 
     // Explicit constructor (for manual creation or @JsonCreator)
     @JsonCreator
     public TemperatureMax_Date(
             @JsonProperty("date") String date,
-            @JsonProperty("max_temp") double max_temp) {
+            @JsonProperty("temperature_max") double max_temp) {
         this.date = date;
-        this.temp = max_temp;
+        super.temperature = max_temp;
     }
 
     public String getDate() { return date; }
-    public double getTemperature() { return temp; }
+    public double getTemperature() { return temperature; }
 }

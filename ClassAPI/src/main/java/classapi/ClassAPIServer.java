@@ -4,7 +4,6 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.util.List;
 
-import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.SerializableString;
 import com.fasterxml.jackson.core.io.CharacterEscapes;
 import com.fasterxml.jackson.core.io.SerializedString;
@@ -22,7 +21,7 @@ public class ClassAPIServer {
     private static final ObjectMapper mapper = new ObjectMapper();
     
     static {
-        //this will get the ClassAPI to allow "<18" as an age range entry
+        //this will get the ClassAPI to allow "<18" as an age range entry (we asked for a former cs students help on this part)
         mapper.getFactory().setCharacterEscapes(new CharacterEscapes() {
             private final int[] esc = CharacterEscapes.standardAsciiEscapesForJSON();
 
@@ -39,6 +38,10 @@ public class ClassAPIServer {
                 return new SerializedString(String.valueOf((char) ch));
             }
         });
+    }
+
+    public static void main(String args[]) throws Exception {
+        execute();
     }
 
 

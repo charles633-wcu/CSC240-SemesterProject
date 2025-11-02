@@ -14,8 +14,8 @@ import java.util.Map;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.net.httpserver.HttpExchange;
 
-//this creates a nested json array for the DataAPI server, 
-//which means the Person Objects is required to be constructed by ClassAPI, Person Objects allow ClassAPI to do calculations
+//this creates a nested json array that the dataapi serves to classapi, 
+//which means the Person Objects are required to be constructed by ClassAPI before sending to UIAPI
 
 public class IncidentDataFetcher {
 

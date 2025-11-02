@@ -4,12 +4,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Victim extends Person {
-    private String sex;
-    private String ageRange;
     private String date;
 
     //No-arg constructor — required for Jackson’s reflection instantiation
-   // public Victim() {}
+    public Victim() {}
 
     @JsonCreator
     public Victim(

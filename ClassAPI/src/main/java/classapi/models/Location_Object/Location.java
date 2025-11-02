@@ -1,6 +1,6 @@
 package classapi.models.Location_Object;
 
-//defined as abstract because it's a blueprint that defines the scope of this program
+//defined as abstract because it's a blueprint that defines the scope of "borough"
 public abstract class Location {
 
     protected String name;

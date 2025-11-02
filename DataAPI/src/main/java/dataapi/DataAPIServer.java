@@ -25,14 +25,25 @@ import com.sun.net.httpserver.HttpServer;
  * ClassAPI now has to create objects of perpetrators and victims (which are child classes of person.java)
  * This allows computations to be done on real objects instead of simply extracting data from a flat table
  * It's more scalable and also more easily malleable (such as creating a new attribute *totalVicMinor* in ClassAPI for example) for
- * novel computations without having to wrangle data out of a massive database
+ * updated features without having to wrangle data every time
  */
 
 public class DataAPIServer {
     
-
     public static void execute() throws Exception {
+
+        try {
+            Class.forName("org.sqlite.JDBC");
+            System.out.println("SQLite driver loaded successfully.");
+        } 
+        catch (ClassNotFoundException e) {
+            System.err.println("SQLite JDBC driver not found: " + e.getMessage());
+        }
+
         System.out.println("Starting DataAPI...");
+        System.out.println("Working dir: " + System.getProperty("user.dir"));
+        System.out.println("Project root: " + Config.PROJECT_ROOT);
+        System.out.println("Incidents DB URL: " + Config.INCIDENTS_DB_URL);
 
         HttpServer server = HttpServer.create(new InetSocketAddress(Config.PORT), 0);
         ObjectMapper mapper = new ObjectMapper();
