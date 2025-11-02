@@ -11,6 +11,7 @@ import java.util.Map;
 //creates a database of incidents
 
 public class DB_Creator_Incidents {
+    public static final String DB_URL = "jdbc:sqlite:incidentsDB.db";
 
     //ensures table created if not already exist
     public static void ensureTable() {

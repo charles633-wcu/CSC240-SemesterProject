@@ -62,6 +62,9 @@ public class Main {
             System.out.println("[TEMPERATURE] error: " + e.getMessage());
         }
 
+        IncidentDataVerifier.verify(DB_Creator_Incidents.DB_URL);
+        TemperatureDataVerifier.verify(DB_Creator_MaxTemp.DB_URL);
+
         System.out.println("\n Phase 1 Data Loader completed" + "\n");
     }
 }

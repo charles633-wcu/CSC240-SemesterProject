@@ -33,7 +33,8 @@ It looks at a dataset of daily crime and weather statistics to explore  correlat
 
 ## Features
 
-- modular Maven Java project
+- Pre-Loaded Databases include in case of external NYC API's are unavailable
+- Modular Maven Java project
 - SQLite integration with JDBC
 - Inter-API communication using OkHttp library
 - JSON serialization with Jackson library

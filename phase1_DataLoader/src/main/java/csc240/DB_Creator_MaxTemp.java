@@ -11,6 +11,8 @@ import java.util.Map;
 //creates max temp database by date
 //ensureTable and other methods seperated into multiple classes to keep type safety and clarity
 public class DB_Creator_MaxTemp {
+   
+    public static final String DB_URL = "jdbc:sqlite:TemperatureDB.db";
 
     //ensures table created if not already exist
     public static void ensureTable() {

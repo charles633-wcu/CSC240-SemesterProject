@@ -12,11 +12,11 @@ public class TemperatureDataVerifier {
     private static int TotalInserted;
 
     public static void writeTemperatureSummaryFile(int totalInserted) {
-        try (FileWriter writer = new FileWriter("temperature_summary.txt")) {
+        try (FileWriter writer = new FileWriter("temperature_verification.txt")) {
             writer.write("Temperature Loader Summary\n");
             writer.write("Run Date: " + java.time.LocalDateTime.now() + "\n");
             writer.write("Total Records Inserted: " + totalInserted + "\n");
-            System.out.println("Summary file created: temperature_summary.txt");
+            System.out.println("Summary file created: temperature_verification.txt");
         } catch (Exception e) {
             System.out.println("Failed to write temperature summary file: " + e.getMessage());
         }
@@ -24,7 +24,7 @@ public class TemperatureDataVerifier {
 
     public static void verify(String dbUrl) {
         try (Connection conn = DriverManager.getConnection(dbUrl);
-             PreparedStatement stmt = conn.prepareStatement("SELECT COUNT(*) FROM DAILY_CRIME_TEMPERATURE");
+             PreparedStatement stmt = conn.prepareStatement("SELECT COUNT(*) FROM TEMPERATURE_RAW");
              ResultSet rs = stmt.executeQuery()) {
 
             int dbCount = rs.getInt(1);
