@@ -18,6 +18,10 @@ $env:CLASS_API_URL = "http://localhost:9080"
 $env:DATA_API_URL = "http://localhost:9080/data"
 $env:PORT = "9080"
 
+Write-Host "Waiting for APISIX Admin API to start..." -ForegroundColor Yellow
+Start-Sleep -Seconds 15
+
+
 Write-Host "Starting CSC240 Project with Apache APISIX Gateway..." -ForegroundColor Cyan
 
 # Configure APISIX routes (only if Docker/APISIX is running)

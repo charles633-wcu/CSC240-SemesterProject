@@ -1,68 +1,54 @@
-version: "3.9"
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
 
 services:
-  dataapi:
-    build:
-      context: ./DataAPI
-    working_dir: /app
-    command: mvn exec:java -Dexec.mainClass=dataapi.Main
-    ports:
-      - "8081:8081"
-    volumes:
-      - ./DataAPI:/app
-    depends_on:
-      - apisix
-
-  classapi:
-    build:
-      context: ./ClassAPI
-    working_dir: /app
-    command: mvn exec:java -Dexec.mainClass=classapi.Main
-    ports:
-      - "8082:8082"
-    volumes:
-      - ./ClassAPI:/app
-    depends_on:
-      - dataapi
-      - apisix
-
-  # UIAPI (in progress)
-  uiapi:
-    build:
-      context: ./UIApi
-    working_dir: /app
-    command: mvn exec:java -Dexec.mainClass=uiapi.UIAPIServer
-    ports:
-      - "8083:8083"
-    volumes:
-      - ./UIApi:/app
-    depends_on:
-      - classapi
-      - apisix
-
   apisix:
-    image: apache/apisix:latest
+    image: apache/apisix:3.7.0-debian
     restart: always
-    ports:
-      - "9080:9080"  # Public gateway 
-      - "9180:9180"  # Admin API
     volumes:
-      - ./conf/config.yaml:/usr/local/apisix/conf/config.yaml
-    environment:
-      - APISIX_STAND_ALONE=true
-      - APISIX_LISTEN_PORT=9080
+      - ./conf/config.yaml:/usr/local/apisix/conf/config.yaml:ro
     depends_on:
       - etcd
+    ports:
+      - "9180:9180/tcp"
+      - "9080:9080/tcp"
+      - "9091:9091/tcp"
+      - "9443:9443/tcp"
+    networks:
+      - apisix
 
   etcd:
-    image: bitnami/etcd:latest
+    image: bitnamilegacy/etcd:3.4.9
+    user: root
     restart: always
-    environment:
-      - ALLOW_NONE_AUTHENTICATION=yes
-      - ETCD_ADVERTISE_CLIENT_URLS=http://0.0.0.0:2379
-      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
     volumes:
-      - etcd_data:/bitnami/etcd
+      - ../example/etcd_data:/etcd_data
+    environment:
+      ETCD_DATA_DIR: /etcd_data
+      ETCD_ENABLE_V2: "true"
+      ALLOW_NONE_AUTHENTICATION: "yes"
+      ETCD_ADVERTISE_CLIENT_URLS: "http://etcd:2379"
+      ETCD_LISTEN_CLIENT_URLS: "http://0.0.0.0:2379"
+    ports:
+      - "2379:2379/tcp"
+    networks:
+      - apisix
 
-volumes:
-  etcd_data:
+networks:
+  apisix:
+    driver: bridge
