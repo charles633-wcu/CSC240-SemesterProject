@@ -5,6 +5,7 @@
 This project is a **three-tiered data-class-ui program** that looks at relationships between daily **New York City crime incidents** and **temperature data**.  
 The system is organized into three Java-based microservices using communication through **HTTP** and data stored in **SQLite**.  
 An **Apache APISIX** gateway routes external requests to each API tier.
+    -It routes from Ports 8081 (dataapi), 8082 (classapi), 8083 (uiapi, in progress), to Port 9080
 
 ---
 

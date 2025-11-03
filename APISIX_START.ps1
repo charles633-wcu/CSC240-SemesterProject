@@ -3,6 +3,7 @@
 # Environment variable (so ClassAPI and UIAPI route via APISIX)
 $env:CLASS_API_URL = "http://localhost:9080"
 $env:DATA_API_URL = "http://localhost:9080/data"
+$env:PORT = "9080"
 
 Write-Host "Starting CSC240 Project with Apache APISIX Gateway..." -ForegroundColor Cyan
 
@@ -40,7 +41,7 @@ foreach ($r in $routes) {
             -Body $body `
             -ContentType "application/json"
 
-        Write-Host "   Route registered: $($r.uri) → port $($r.port)" -ForegroundColor Green
+      #  Write-Host "   Route registered: $($r.uri) → port $($r.port)" -ForegroundColor Green
     }
     catch {
         Write-Host "   Failed to register route $($r.uri): $_" -ForegroundColor Red
@@ -49,9 +50,9 @@ foreach ($r in $routes) {
 
 Write-Host ""
 Write-Host "    APISIX Gateway Active at: http://localhost:9080" -ForegroundColor Green
-Write-Host "   /data/*      → DataAPI (port 8081)"
-Write-Host "   /summary/*   → ClassAPI (port 8082)"
-Write-Host "   /ui/*        → UIAPI (port 8083)"
+Write-Host "   /data/*      from DataAPI (port 8081)"
+Write-Host "   /summary/*   from ClassAPI (port 8082)"
+Write-Host "   /ui/*        from UIAPI (port 8083)"
 Write-Host ""
 
 

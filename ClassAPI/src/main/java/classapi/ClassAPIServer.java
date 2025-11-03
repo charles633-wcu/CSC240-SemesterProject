@@ -71,8 +71,8 @@ public class ClassAPIServer {
                 sendText(exchange, 500, "Failed: " + e.getMessage());
             }
         });
-        System.out.println("ClassAPI running on port 8082");
-        System.out.println("   - http://localhost:8082/summary/{date}");
+        System.out.println("ClassAPI running on port 9080 ");
+        System.out.println("   - http://localhost:9080/summary/{date}");
         server.start();
     }
 

@@ -32,6 +32,7 @@ public class DataAPIServer {
     
     public static void execute() throws Exception {
 
+        String port = Config.PORT + "";
         try {
             Class.forName("org.sqlite.JDBC");
             System.out.println("SQLite driver loaded successfully.");
@@ -67,11 +68,16 @@ public class DataAPIServer {
 
         server.start();
 
-        System.out.println("DataAPI running on port " + Config.PORT);
-        System.out.println("   - http://localhost:" + Config.PORT + "/data/incidents");
-        System.out.println("   - http://localhost:" + Config.PORT + "/data/perpetrators");
-        System.out.println("   - http://localhost:" + Config.PORT + "/data/victims");
-        System.out.println("   - http://localhost:" + Config.PORT + "/data/temperature");
+        System.out.println("DataAPI running on port " + Config.PORT + " or 9080 (APISIX)");
+        System.out.println("   - http://localhost:" + System.getenv().getOrDefault("PORT", port) + "/data/incidents");
+        System.out.println("   - http://localhost:" + System.getenv().getOrDefault("PORT", port) + "/data/perpetrators");
+        System.out.println("   - http://localhost:" + System.getenv().getOrDefault("PORT", port) + "/data/victims");
+        System.out.println("   - http://localhost:" + System.getenv().getOrDefault("PORT", port) + "/data/temperature");
+
+
+      //  System.out.println("   - http://localhost:" + Config.PORT + "/data/perpetrators");
+       // System.out.println("   - http://localhost:" + Config.PORT + "/data/victims");
+       // System.out.println("   - http://localhost:" + Config.PORT + "/data/temperature");
     }
 
     // returns all rows from the given database table as json for the dataapi endpoints
