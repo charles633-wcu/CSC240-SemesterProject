@@ -64,15 +64,15 @@ $projectRoot = $PSScriptRoot
 Write-Host "Starting DataAPI from: $projectRoot\DataAPI" -ForegroundColor Yellow
 
 # DataAPI
-Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$projectRoot\DataAPI'; mvn exec:java '-Dexec.mainClass=dataapi.Main'"
+Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$projectRoot\DataAPI'; mvn clean compile exec:java '-Dexec.mainClass=dataapi.Main'"
 Start-Sleep -Seconds 3
 
 # ClassAPI
-Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$projectRoot\ClassAPI'; mvn exec:java '-Dexec.mainClass=classapi.Main'"
+Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$projectRoot\ClassAPI'; mvn clean compile exec:java '-Dexec.mainClass=classapi.Main'"
 Start-Sleep -Seconds 3
 
 # UIApi
-Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$projectRoot\UIApi'; mvn exec:java '-Dexec.mainClass=uiapi.UIAPIServer'"
+Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$projectRoot\UIApi'; mvn clean compile exec:java '-Dexec.mainClass=uiapi.UIAPIServer'"
 
 Write-Host ""
 Write-Host "Launched Project Servers" -ForegroundColor Green
