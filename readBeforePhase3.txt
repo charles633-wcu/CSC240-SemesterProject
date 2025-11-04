@@ -1,0 +1,247 @@
+CSC240 Semester Project – How Everything Works
+
+NYC Crime and Temperature Comparator
+A complete guide for graders
+
+1. Project Purpose
+
+This project studies the connection between daily temperatures and violent crime incidents in New York City.
+It takes real data (incidents, victims, perpetrators, and temperature) stored in SQLite databases, exposes them through three Java APIs, and routes them together using Apache APISIX.
+
+Originally, this system was run through a PowerShell script that started everything manually, but it’s now fully containerized using Docker Compose — so anyone can run the entire project with one command.
+
+2. Big Picture Architecture
+Host (localhost:9080)
+   │
+   ▼
+APISIX → DataAPI (8081)
+       → ClassAPI (8082)
+       → UIAPI (8083)
+
+
+Each API runs in its own container and communicates internally through a shared Docker network.
+Externally, everything passes through APISIX, which listens on port 9080.
+
+3. Flowchart 1 – What Happens When You Visit /summary/2023-12-01
+🧍 You (the User)
+     │
+     ▼
+🌐 http://localhost:9080/summary/2023-12-01
+     │
+     ▼
+🚦 APISIX Gateway (Port 9080)
+     - Checks the URL prefix
+     - Forwards "/summary" requests to ClassAPI (port 8082)
+     │
+     ▼
+🧠 ClassAPI
+     - Reads date parameter (2023-12-01)
+     - Requests data from DataAPI:
+         • /data/incidents
+         • /data/temperature
+     - Converts temperature to Fahrenheit
+     - Builds a JSON summary:
+         { date: "2023-12-01",
+           incidents: 17,
+           temperature: 64.2,
+           temperature_unit: "Fahrenheit" }
+     │
+     ▼
+🗂️ DataAPI
+     - Queries SQLite databases:
+         • IncidentsDB.db
+         • TemperatureDB.db
+     - Sends raw JSON data to ClassAPI
+     │
+     ▼
+📤 ClassAPI → APISIX → Browser
+     - Final JSON response returned to user
+
+4. Flowchart 2 – What Happens During docker compose up --build
+📦 Docker Compose
+     │
+     ▼
+⚙️ Step 1: Build Phase
+     - Compiles each Maven project
+     - Creates .jar files for:
+         • DataAPI
+         • ClassAPI
+         • UIAPI
+     │
+     ▼
+🌐 Step 2: Network Setup
+     - Creates a shared network called "apisix"
+     - Assigns containers internal hostnames:
+         dataapi, classapi, uiapi, apisix
+     │
+     ▼
+🚀 Step 3: Container Startup
+     - Starts etcd (for APISIX)
+     - Starts APISIX gateway
+     - Starts DataAPI, ClassAPI, and UIAPI
+     │
+     ▼
+⏱️ Step 4: route-init Waits
+     - Waits until APISIX is fully ready
+     - Then runs curl commands to register routes:
+         • /data/* → dataapi:8081
+         • /summary/* → classapi:8082
+         • /ui/* → uiapi:8083
+     │
+     ▼
+✅ Step 5: System Ready
+     - All APIs live
+     - Databases mounted
+     - Requests can flow through localhost:9080
+
+5. The Three APIs Explained
+5.1 DataAPI – The Database Layer
+
+Purpose:
+Serves all raw data from four SQLite databases.
+
+Endpoints
+
+Endpoint	Description
+/data/incidents	Returns all daily crime incidents
+/data/victims	Returns victim information
+/data/perpetrators	Returns perpetrator information
+/data/temperature	Returns daily temperature data
+
+Ports
+
+Internal: 8081
+
+Through APISIX: localhost:9080/data/...
+
+Databases
+
+IncidentsDB.db
+
+VictimsDB.db
+
+PerpetratorsDB.db
+
+TemperatureDB.db
+
+Note: If Docker doesn’t mount these from your host machine, SQLite auto-creates empty ones. That’s why blank databases appeared before mounting the real ones.
+
+5.2 ClassAPI – The Logic Layer
+
+Purpose:
+Fetches raw data from DataAPI, combines it, and generates summaries.
+
+Main Endpoint
+
+Endpoint	Description
+/summary/{YYYY-MM-DD}	Returns a summary of incidents and temperature for that date
+
+Ports
+
+Internal: 8082
+
+Through APISIX: localhost:9080/summary/{YYYY-MM-DD}
+
+Behavior
+
+Makes internal HTTP requests via OkHttp.
+
+Converts temperatures from Celsius → Fahrenheit.
+
+Returns readable keys (e.g., "Temperature (Fahrenheit)").
+
+Uses DATA_API_URL environment variable for communication:
+
+DATA_API_URL=http://dataapi:8081/data
+
+5.3 UIAPI – The Presentation Layer
+
+Purpose:
+Will eventually present formatted summaries to the user.
+
+Planned Endpoint
+
+Endpoint	Description
+/ui/view?date={YYYY-MM-DD}	Displays daily summary in a formatted view
+
+Ports
+
+Internal: 8083
+
+Through APISIX: localhost:9080/ui/view?date={YYYY-MM-DD}
+
+6. APISIX Gateway and Route Initialization
+
+APISIX listens on port 9080 and forwards traffic to the correct container.
+
+Registered Routes (by route-init):
+
+Path	Target Service	Port
+/data/*	DataAPI	8081
+/summary/*	ClassAPI	8082
+/ui/*	UIAPI	8083
+
+The route-init container waits for APISIX to finish starting up before sending its curl commands, preventing “connection refused” errors.
+
+7. How to Run Everything
+Prerequisites
+
+Install Docker Desktop
+
+Clone the project:
+
+git clone https://github.com/<your-username>/CSC240-SemesterProject.git
+cd CSC240-SemesterProject
+
+Start all services
+docker compose up --build
+
+Test the APIs
+Service	Example URL	Description
+DataAPI	http://localhost:9080/data/incidents
+	Returns all incidents
+DataAPI	http://localhost:9080/data/victims
+	Returns victim data
+DataAPI	http://localhost:9080/data/perpetrators
+	Returns perpetrator data
+DataAPI	http://localhost:9080/data/temperature
+	Returns temperature data
+ClassAPI	http://localhost:9080/summary/2023-12-01
+	Returns combined summary
+UIAPI	http://localhost:9080/ui/view?date=2023-12-01
+	(In progress) formatted results
+
+To stop:
+
+docker compose down
+
+8. Troubleshooting Journey and Fixes
+Problem	What Happened	How It Was Fixed
+Databases showed up empty	SQLite auto-created blank .db files	Mounted host .db files into container volumes
+“Connection refused” errors	Routes tried registering before APISIX was ready	Added a wait loop in route-init
+ClassAPI couldn’t reach DataAPI	Used localhost instead of internal name	Added DATA_API_URL=http://dataapi:8081/data in docker-compose.yml
+Wrong port shown in logs	Confused between container port and APISIX port	Confirmed APISIX handles public access on 9080
+Script-only setup	Old PowerShell version didn’t work cross-platform	Fully automated inside Docker Compose
+9. Key Takeaways
+
+JAR builds are required — Docker can’t run Java source directly.
+
+Mount databases correctly — otherwise, empty SQLite files appear.
+
+Never use localhost between containers — use service names instead.
+
+Use Docker Compose automation — no PowerShell script needed.
+
+Wait for APISIX — don’t register routes too early.
+
+10. Summary
+
+Fully containerized and reproducible
+
+All services communicate via one shared Docker network
+
+Routes automatically registered by route-init
+
+PowerShell scripts no longer required
+
+Works on any computer with Docker installed
