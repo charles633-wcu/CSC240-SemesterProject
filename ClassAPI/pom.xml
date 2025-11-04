@@ -7,7 +7,11 @@
   <groupId>edu.wcupa.csc240.classapi</groupId>
   <artifactId>class-api</artifactId>
   <version>1.0-SNAPSHOT</version>
+
+  <packaging>jar</packaging>
+
   <name>ClassAPI</name>
+
 
   <properties>
       <maven.compiler.source>21</maven.compiler.source>
@@ -15,7 +19,6 @@
   </properties>
 
   <dependencies>
-  
       <dependency>
           <groupId>com.fasterxml.jackson.core</groupId>
           <artifactId>jackson-databind</artifactId>
@@ -58,7 +61,41 @@
               </configuration>
           </plugin>
 
-<!-- https://mvnrepository.com/artifact/org.codehaus.mojo/exec-maven-plugin -->
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-jar-plugin</artifactId>
+              <version>3.3.0</version>
+              <configuration>
+                  <archive>
+                      <manifest>
+                          <mainClass>classapi.ClassAPIServer</mainClass>
+                      </manifest>
+                  </archive>
+              </configuration>
+          </plugin>
+
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-shade-plugin</artifactId>
+              <version>3.5.0</version>
+              <executions>
+                  <execution>
+                      <phase>package</phase>
+                      <goals>
+                          <goal>shade</goal>
+                      </goals>
+                      <configuration>
+                          <createDependencyReducedPom>false</createDependencyReducedPom>
+                          <transformers>
+                              <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                  <mainClass>classapi.ClassAPIServer</mainClass>
+                              </transformer>
+                          </transformers>
+                      </configuration>
+                  </execution>
+              </executions>
+          </plugin>
+
           <plugin>
               <groupId>org.codehaus.mojo</groupId>
               <artifactId>exec-maven-plugin</artifactId>
@@ -70,10 +107,3 @@
       </plugins>
   </build>
 </project>
-
-
-
-
-
-
-
