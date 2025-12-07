@@ -1,0 +1,44 @@
+apisix:
+  config_center: yaml
+  node_listen: 9080
+  enable_ipv6: false
+
+deployment:
+  admin:
+    allow_admin:
+      - 0.0.0.0/0
+    admin_key:
+      - name: "admin"
+        key: "edd1c9f034335f136f87ad84b625c8f1"
+        role: admin
+
+  etcd:
+    host:
+      - "http://etcd:2379"
+    prefix: "/apisix"
+    timeout: 30
+
+routes:
+  - uri: /hello
+    upstream:
+      type: roundrobin
+      nodes: 
+        "phase2-api-server:8080": 1
+
+  - uri: /api/data/*
+    upstream:
+      type: roundrobin
+      nodes:
+        "phase2-api-server:8080": 1
+
+  - uri: /api/class/*
+    upstream:
+      type: roundrobin
+      nodes:
+        "phase2-api-server:8080": 1
+
+  - uri: /ui/*
+    upstream:
+      type: roundrobin
+      nodes:
+        "phase2-api-server:8080": 1

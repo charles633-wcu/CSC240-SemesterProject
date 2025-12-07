@@ -1,0 +1,56 @@
+AI Disclosure
+
+In completing this project, we used AI tools such as GitHub Co-Pilot as a debugging assistant, and Claude as an on-demand tutor 
+It was very useful to help understand Java/Spark/Docker/API concepts, and refactor my code more efficiently. 
+Below is a summary of how AI was used, with clear attribution.
+
+1. What we used AI for
+    a. Debugging & Error Explanation
+        We used AI to:
+            Learn how to use Powershell and CMD
+            Help with debugging errors in JavaScript
+            Help with configuring paths to relative directories to avoid hardcoding paths 
+            Explain documentation on APISIX
+            Explain Youtube tutorials on Docker containerization
+            Explain documentation on OkHttp, Jackson, and other libraries when we felt confused
+            Explain why APISIX couldn't reach etcd or the API server
+            Suggest more readable syntax.
+
+    b. Architectural Guidance
+        AI helped us think through:
+            What Docker Containerization solves that old tech did not
+            How APISIX, etcd, and route-init interact at a conceptual level
+            How Maven interprets multi-module projects
+            Explain SparkJava concepts
+    
+    c. Writing Snippets / Patterns
+        GitHub copilot auto-generated getters/setters and simple patterns like that
+        AI taught us many things creating examples of:
+            Example conf.yaml files
+            Example JS graphs
+            How to use lambdas (from chapter 13) correctly
+        
+        (These were always manually adapted by us to fit the actual project.)
+
+    d. Suggest revisions for a professional looking README displayed on GitHub for future employment recruiters
+
+2. Interpreting complex error logs from PowerShell, Docker, and Maven 
+
+3. What Was Not Done By AI
+        Write or implement methods
+        Create Databases
+        Create and interpret JSON
+        Create class hierarchies
+        Set up Docker images or APISIX routes 
+        Create file structure
+        Build SQLite schema
+        Decide the architecture 
+        Overall design
+        Translating experience with Python Tkinter, Flask, in website design to javascript
+
+Additional resources used:
+-StackOverflow
+-Reddit
+-Youtube
+-GitHub
+

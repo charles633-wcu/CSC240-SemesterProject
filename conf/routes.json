@@ -1,0 +1,37 @@
+[
+  {
+    "id": "phase2-hello",
+    "uri": "/hello",
+    "upstream": {
+      "nodes": { "phase2-api-server:8080": 1 },
+      "type": "roundrobin"
+    }
+  },
+
+  {
+    "id": "phase2-data",
+    "uri": "/api/data/*",
+    "upstream": {
+      "nodes": { "phase2-api-server:8080": 1 },
+      "type": "roundrobin"
+    }
+  },
+
+  {
+    "id": "phase2-class",
+    "uri": "/api/class/*",
+    "upstream": {
+      "nodes": { "phase2-api-server:8080": 1 },
+      "type": "roundrobin"
+    }
+  },
+
+  {
+    "id": "phase2-ui",
+    "uri": "/ui/*",
+    "upstream": {
+      "nodes": { "phase2-api-server:8080": 1 },
+      "type": "roundrobin"
+    }
+  }
+]

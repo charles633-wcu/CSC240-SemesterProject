@@ -1,0 +1,28 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 30px;
+}
+
+h1 {
+    margin-bottom: 10px;
+}
+
+canvas {
+    border: 1px solid #aaa;
+    margin-bottom: 20px;
+}
+
+ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+li {
+    margin-bottom: 10px;
+}
+
+#tempChart {
+    height: 500px !important;
+    width: 700px !important;
+}
+

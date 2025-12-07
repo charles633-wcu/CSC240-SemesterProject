@@ -1,0 +1,78 @@
+services:
+  phase2-api-server:
+    build:
+      context: .
+      dockerfile: phase2-api-server/Dockerfile
+    container_name: phase2-api-server
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./IncidentsDB.db:/app/IncidentsDB.db
+      - ./PerpetratorsDB.db:/app/PerpetratorsDB.db
+      - ./VictimsDB.db:/app/VictimsDB.db
+      - ./TemperatureDB.db:/app/TemperatureDB.db
+    networks:
+      - apisix-network
+
+  etcd:
+    image: bitnamilegacy/etcd:3.4.9
+    container_name: etcd
+    environment:
+      ALLOW_NONE_AUTHENTICATION: "yes"
+      ETCD_ENABLE_V2: "true"
+      ETCD_ADVERTISE_CLIENT_URLS: "http://etcd:2379"
+      ETCD_LISTEN_CLIENT_URLS: "http://0.0.0.0:2379"
+    networks:
+      - apisix-network
+
+  apisix:
+    image: apache/apisix:3.7.0-debian
+    container_name: apisix
+    depends_on:
+      - etcd
+      - phase2-api-server
+    volumes:
+      - ./conf/config.yaml:/usr/local/apisix/conf/config.yaml
+    ports:
+      - "9080:9080"
+      - "9180:9180"
+    networks:
+      - apisix-network
+
+  route-init:
+    image: curlimages/curl:8.6.0
+    container_name: route-init
+    depends_on:
+      - apisix
+    networks:
+      - apisix-network
+    entrypoint: ["/bin/sh", "-c", "echo 'Waiting for APISIX admin API...' && \
+      until curl -s http://apisix:9180/apisix/admin/routes -H 'X-API-KEY: edd1c9f034335f136f87ad84b625c8f1' | grep -q '\"list\"'; do \
+        echo 'APISIX not ready yet...'; \
+        sleep 3; \
+      done && \
+      echo 'Registering /hello' && \
+      curl -s -X PUT http://apisix:9180/apisix/admin/routes/1 \
+        -H 'X-API-KEY: edd1c9f034335f136f87ad84b625c8f1' \
+        -H 'Content-Type: application/json' \
+        -d '{\"uri\":\"/hello\",\"upstream\":{\"nodes\":{\"phase2-api-server:8080\":1},\"type\":\"roundrobin\"}}' && \
+      echo 'Registering /api/data/*' && \
+      curl -s -X PUT http://apisix:9180/apisix/admin/routes/2 \
+        -H 'X-API-KEY: edd1c9f034335f136f87ad84b625c8f1' \
+        -H 'Content-Type: application/json' \
+        -d '{\"uri\":\"/api/data/*\",\"upstream\":{\"nodes\":{\"phase2-api-server:8080\":1},\"type\":\"roundrobin\"}}' && \
+      echo 'Registering /api/class/*' && \
+      curl -s -X PUT http://apisix:9180/apisix/admin/routes/3 \
+        -H 'X-API-KEY: edd1c9f034335f136f87ad84b625c8f1' \
+        -H 'Content-Type: application/json' \
+        -d '{\"uri\":\"/api/class/*\",\"upstream\":{\"nodes\":{\"phase2-api-server:8080\":1},\"type\":\"roundrobin\"}}' && \
+      echo 'Registering /ui/*' && \
+      curl -s -X PUT http://apisix:9180/apisix/admin/routes/4 \
+        -H 'X-API-KEY: edd1c9f034335f136f87ad84b625c8f1' \
+        -H 'Content-Type: application/json' \
+        -d '{\"uri\":\"/ui/*\",\"upstream\":{\"nodes\":{\"phase2-api-server:8080\":1},\"type\":\"roundrobin\"}}' && \
+      echo 'All routes registered.'"]
+
+networks:
+  apisix-network:
+    driver: bridge
