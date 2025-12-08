@@ -52,14 +52,19 @@ mvn -pl phase3-site-generator -Dexec.mainClass=com.wcupa.csc240.generator.SiteGe
 
 ### Access the APIs
 
-| Service      | Example Endpoint                                                                               | Description                                                           |
-| ------------ | ---------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
-| **DataAPI**  | [http://localhost:9080/data/incidents](http://localhost:9080/data/incidents)                   | Returns all NYC crime incidents                                       |
-|              | [http://localhost:9080/data/perpetrators](http://localhost:9080/data/perpetrators)             | Returns perpetrator details                                           |
-|              | [http://localhost:9080/data/victims](http://localhost:9080/data/victims)                       | Returns victim data                                                   |
-|              | [http://localhost:9080/data/temperature](http://localhost:9080/data/temperature)               | Returns temperature data                                              |
-| **ClassAPI** | [http://localhost:9080/summary/{YYYY-MM-DD}](http://localhost:9080/summary/{YYYY-MM-DD})       | Returns aggregated incidents and temperature summary for a given date |
-| **UIAPI**    | [http://localhost:9080/ui/view?{YYYY-MM-DD}](http://localhost:9080/ui/view?{YYYY-MM-DD}) | (In progress) Will display formatted results for a given date         |
+| Service       | Example Endpoint                                              | Description                                                                    |
+|--------------|----------------------------------------------------------------|--------------------------------------------------------------------------------|
+| **Data API** | http://localhost:9080/api/data/incidents                      | Returns all incident records from the Incidents SQLite database.              |
+|              | http://localhost:9080/api/data/temperatures                   | Returns all daily maximum temperature records.                                 |
+| **Class API**| http://localhost:9080/api/class/daily-summary                 | Returns aggregated incident + temperature summaries for all available dates.  |
+|              | http://localhost:9080/api/class/daily-summary?date=YYYY-MM-DD | Returns an aggregated summary for a specific date.                             |
+|              | http://localhost:9080/api/class/combined                      | Returns all incident + temperature pairs for all dates.                        |
+|              | http://localhost:9080/api/class/combined?date=YYYY-MM-DD      | Returns incident + temperature pairs for a specific date.                      |
+| **UI API**   | http://localhost:9080/ui                                      | Simple UI API health check (“UI API is running.”).                             |
+|              | http://localhost:9080/ui/daily-summary?date=YYYY-MM-DD        | Frontend-friendly JSON summary for a specific date.                            |
+|              | http://localhost:9080/ui/daily-summary/all                    | Frontend-friendly JSON summaries for all dates (used by the homepage graph).   |
+|              | http://localhost:9080/ui/combined?date=YYYY-MM-DD             | Frontend-friendly combined incident + temperature data for a specific date.    |
+
 
 To stop all containers:
 
