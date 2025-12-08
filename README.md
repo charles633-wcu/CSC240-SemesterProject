@@ -46,7 +46,6 @@ It uses:
 ```bash
 docker compose up --build
 ```
-
 cmd, run phase3
 mvn -pl phase3-site-generator -Dexec.mainClass=com.wcupa.csc240.generator.SiteGenerator org.codehaus.mojo:exec-maven-plugin:3.1.0:java
 
@@ -66,11 +65,6 @@ mvn -pl phase3-site-generator -Dexec.mainClass=com.wcupa.csc240.generator.SiteGe
 |              | http://localhost:9080/ui/combined?date=YYYY-MM-DD             | Frontend-friendly combined incident + temperature data for a specific date.    |
 
 
-To stop all containers:
-
-```bash
-docker compose down
-```
 ### Access the Website
 
 The  site is generated into:

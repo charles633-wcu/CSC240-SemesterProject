@@ -20,7 +20,6 @@ public class DataService {
                 .map(DataMapper::mapIncident)
                 .collect(Collectors.toList());
         } catch (NullPointerException | IllegalArgumentException e) {
-            // Log the error or handle it as needed
             return List.of(); // Return an empty list instead of null
         }
     }
@@ -52,7 +51,6 @@ public class DataService {
                 .map(DataMapper::mapTemp)
                 .collect(Collectors.toList());
         } catch (NullPointerException | IllegalArgumentException e) {
-            // Log the error or handle it as needed
             return List.of(); // Return an empty list instead of null
         }
     }
@@ -64,7 +62,6 @@ public class DataService {
                 .findFirst()
                 .orElse(null);
         } catch (NullPointerException | IllegalArgumentException e) {
-            // Handle specific exceptions as needed
             e.printStackTrace();
             return null;
         }
