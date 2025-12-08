@@ -109,48 +109,11 @@ The following SQLite databases are mounted into the container:
 ## Summary
 
 This project is a three-phase system that:
-1. Loads data  
-2. Serve data and analytics  
-3. Generate and hosts the website  
+1. Fetches, verifies, and creates SQLite databases from external historical NYC crime and temperature APIs  
+2. Creates a containerized **Spark** server that exposes API layers: Data, Class, UI, for front-end consumption and routed with **Apache APISIX**
+3. Generates static HTML websites that use **JavaScript** to fetch data from API layer endpoints
+4. These websites are served by **Apache httpd** with the index page at **http://localhost/**  
 
-### Phase 1 – Data Loader
-Phase 1 fetches historical NYC violent-crime data and temperature data, verifies it, and writes all results into four SQLite databases. These databases serve as the persistent data source for the entire system. The output of Phase 1 is:
-- IncidentsDB.db  
-- VictimsDB.db  
-- PerpetratorsDB.db  
-- TemperatureDB.db  
-
-Phase 1 runs locally with Maven and is not containerized.
-
-### Phase 2 – Unified API Server
-Phase 2 is a single Java/Spark server that exposes three logical API layers:
-- **Data API** (`/api/data/*`) – returns raw rows from the SQLite databases  
-- **Class API** (`/api/class/*`) – returns aggregated summaries and combined crime/temperature data  
-- **UI API** (`/ui/*`) – returns formatted JSON designed for front-end consumption  
-
-Phase 2 is fully containerized using **Docker Compose**.  
-The server runs inside a container, and the SQLite databases are mounted into it.
-
-All external traffic goes through **Apache APISIX**, which exposes a single entrypoint:
-
-```
-http://localhost:9080
-```
-
-APISIX routes incoming requests to the appropriate Spark endpoints inside the container.
-
-### Phase 3 – Static Site Generator
-Phase 3 generates a static HTML website (index page, summary lookup, and combined lookup).  
-The site uses JavaScript to call the Phase 2 UIAPI endpoints.
-
-Output files are written to:
-
-```
-phase3-site-generator/target/site/
-```
-
-These files are served by **Apache httpd**, which acts as a simple static file server.  
-This separates the UI from the API layer and avoids CORS issues.
 
 ### How the Technologies Fit Together
 
