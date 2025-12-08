@@ -67,6 +67,15 @@ mvn -pl phase3-site-generator -Dexec.mainClass=com.wcupa.csc240.generator.SiteGe
 
 ### Access the Website
 
+1. Install Apache httpd (Windows)
+2. Edit C:\Apache24\conf\httpd.conf
+3. Set:
+    DocumentRoot "C:/path/to/project/phase3-site-generator/target/site"
+    <Directory "C:/path/to/project/phase3-site-generator/target/site">
+        Require all granted
+    </Directory>
+4. Restart Apache service
+
 The  site is generated into:
 ```
 phase3-site-generator/target/site/
